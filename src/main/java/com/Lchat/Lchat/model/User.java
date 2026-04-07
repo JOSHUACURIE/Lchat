@@ -31,6 +31,11 @@ public class User {
     @Column(updatable = false)
     private LocalDateTime lastActive;
 
+    @OneToMany(mappedBy = "sender")
+    public List<Message> sentMessages;
+
+    @OneToMany(mappedBy = "receiver")
+    public List<Message> receivedMessages;
 
     //constructors
     public User(){}
