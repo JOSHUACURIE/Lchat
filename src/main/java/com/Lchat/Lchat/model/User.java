@@ -12,6 +12,7 @@ public class User {
     @GeneratedValue(strategy =GenerationType.IDENTITY)
     private Long id;
 
+     private String username;
     @Column( nullable = false,unique = true)
     private String name;
     
@@ -69,6 +70,9 @@ public class User {
 
     public LocalDateTime getLastActive(){ return lastActive;}
     public void setLastActive(LocalDateTime lastActive){ this.lastActive=lastActive;}
+
+    public String getUsername(){ return username;}
+    public void setUsername(String username){ this.username=username;}
 
 
     
