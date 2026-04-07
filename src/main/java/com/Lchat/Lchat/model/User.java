@@ -16,10 +16,10 @@ public class User {
     private String name;
     
     @Column(nullable = false)
-    private Long password;
+    private String password;
 
     @Column(nullable = false,unique = true)
-    private Long email;
+    private String email;
     
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -39,6 +39,32 @@ public class User {
         this.name=name;
         this.password=password;
         this.email=email;
+        this.chatStatus=ChatStatus.OFFLINE;
     }
+
+    public Long getId(){ return id;}
+    public void setId(Long id){ this.id=id;}
+
+    public String getName(){ return name;}
+    public void setName(String name){ this.name=name;}
+ 
+    public String getPassword(){ return password;}
+    public void setPassword(String password){ this.password=password;}
+
+    @PrePersist
+  protected void onCreate(){
+ this.createdAt=LocalDateTime.now();
+  }
+
+    public String getEmail(){ return email;}
+    public void setEmail(String email){ this.email=email;}
+
+    public LocalDateTime getCreatedAt(){ return createdAt;}
+    public void setCreatedAt(LocalDateTime createdAt){ this.createdAt=createdAt;}
+
+    public LocalDateTime getLastActive(){ return lastActive;}
+    public void setLastActive(LocalDateTime lastActive){ this.lastActive=lastActive;}
+
+
     
 }
