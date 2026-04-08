@@ -91,7 +91,28 @@ if(userOptional.isPresent()){
 
 }
 }
+//get user by ID
+public UserResponseDTO getUserById(Long id){
+    User user=userRepository.findById(id)
+           .orElseThrow(()-> new RuntimeException("user not found with id: "+id));
+return userMapper.toResponseDTO(user);
+}
 
+//get user by username
+public UserResponseDTO getUserByUsername(String username){
+    User user=userRepository.findByUsername(username)
+    .orElseThrow(()->new RuntimeException("user not found with username: "+username));
+
+return userMapper.toResponseDTO(user);
+}
+//get all online users
+public List<UserDTO> getAllOnlineUsers(){
+    List<User>onlineUsers=userRepository.findByStatus(ChatStatus.ONLINE);
+
+    return onlineUsers.stream()
+    .map(userMapper::toDTO)
+    .collect(Collectors.toList());
+}
 
 
 
