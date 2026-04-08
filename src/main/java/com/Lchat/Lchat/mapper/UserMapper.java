@@ -4,6 +4,8 @@ import com.Lchat.Lchat.dto.*;
 import com.Lchat.Lchat.model.*;
 import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
+import java.util.stream.Collectors;
+import java.util.*;
 
 @Component
 public class UserMapper {
@@ -33,7 +35,7 @@ public UserResponseDTO toResponseDTO(User user){
     dto.setUsername(user.getUsername());
     dto.setName(user.getName());
     dto.setEmail(user.getEmail());
-    dto.setChatStatus(user.geChatStatus());
+    dto.setChatStatus(user.getChatStatus());
     dto.setLastActive(user.getLastActive());
     dto.setCreatedAt(user.getCreatedAt());
 
@@ -52,5 +54,29 @@ public void updateEntity(UserUpdateDTO dto,User user ){
     if(dto.getPassword() != null){ user.setPassword(dto.getPassword());}
 
 }
+public UserDTO toDTO(User user) {
+    if (user == null) {
+        return null;
+    }
+    
+    UserDTO dto = new UserDTO();
+    dto.setId(user.getId());
+    dto.setUsername(user.getUsername());
+    dto.setName(user.getName());
+    dto.setEmail(user.getEmail());
+    dto.setChatStatus(user.getChatStatus());
+    
+    return dto;
+}
 
+// Convert list of Users to list of UserDTOs
+public List<UserDTO> toDTOList(List<User> users) {
+    if (users == null) {
+        return null;
+    }
+    
+    return users.stream()
+            .map(this::toDTO)
+            .collect(Collectors.toList());
+}
 }

@@ -74,7 +74,10 @@ public class User {
     public String getUsername(){ return username;}
     public void setUsername(String username){ this.username=username;}
 
-    public ChatStatus geChatStatus(){ return chatStatus;}
+    public ChatStatus getChatStatus(){ return chatStatus;}
     public void setChatStatus(ChatStatus chatStatus){ this.chatStatus=chatStatus;}
     
+
+    
+
 }

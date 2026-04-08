@@ -15,7 +15,7 @@ public class Message {
     private LocalDateTime timestamp;
     private boolean isRead;
     private String type;
-    
+    private ChatStatus chatStatus;
 
     @ManyToOne
     @JoinColumn(name = "sender_id",nullable = false)
@@ -50,5 +50,7 @@ public class Message {
 
     public String getType(){ return type;}
     public void setType(String type){ this.type=type;}
+
+
     
 }
