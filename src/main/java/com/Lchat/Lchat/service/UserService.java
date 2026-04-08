@@ -79,6 +79,19 @@ public UserResponseDTO login(UserLoginDTO loginDTO){
     return userMapper.toResponseDTO(user);
 }
 
+//logout user
+public void logout(Long userId){
+Optional<User>userOptional=userRepository.findById(userId);
+
+if(userOptional.isPresent()){
+  User user=userOptional.get();
+  user.setChatStatus(ChatStatus.OFFLINE);
+  user.setLastActive(LocalDateTime.now());
+  userRepository.save(user);
+
+}
+}
+
 
 
 
