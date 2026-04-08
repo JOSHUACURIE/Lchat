@@ -18,22 +18,7 @@ public interface MessageRepository extends JpaRepository<Message,Long>{
         Long senderId1,Long receiverId1,Long senderId2,Long receiverId2
     );
 
-    //find unread messages for a user
-    List<Message>findByReceiverIdAndIsReadFalse(Long receiverId);
-
-
-    //get last message between two people
-        Message findTopBySenderIdAndReceiverIdOrReceiverIdAndSenderIdOrderByTimestampDesc(
-        Long senderId1, Long receiverId1, Long senderId2, Long receiverId2);
-         // 4. Mark messages as read
-    @Modifying
-    @Query("UPDATE Message m SET m.isRead = true WHERE m.receiver.id = :receiverId AND m.sender.id = :senderId")
-    void markMessagesAsRead(@Param("receiverId") Long receiverId, @Param("senderId") Long senderId);
-    
-    // 5. Get recent conversations for a user (distinct chat partners)
-    @Query("SELECT DISTINCT m.sender FROM Message m WHERE m.receiver.id = :userId " +
-           "UNION SELECT DISTINCT m.receiver FROM Message m WHERE m.sender.id = :userId")
-    List<User> findChatPartners(@Param("userId") Long userId);
+  
     
     // 6. Delete messages older than (for cleanup)
     void deleteByTimestampBefore(LocalDateTime date);
@@ -41,4 +26,29 @@ public interface MessageRepository extends JpaRepository<Message,Long>{
     // 7. Count unread messages for a user
     long countByReceiverIdAndIsReadFalse(Long receiverId);
     
+
+ @Query("SELECT m FROM Message m WHERE (m.sender.id = :user1 AND m.receiver.id = :user2) OR (m.sender.id = :user2 AND m.receiver.id = :user1) ORDER BY m.timestamp ASC")
+List<Message> findConversation(@Param("user1") Long user1, @Param("user2") Long user2);
+
+// Get unread messages for a user
+List<Message> findByReceiverIdAndIsReadFalse(Long receiverId);
+
+// Mark messages as read
+@Modifying
+@Query("UPDATE Message m SET m.isRead = true WHERE m.receiver.id = :receiverId AND m.sender.id = :senderId")
+void markMessagesAsRead(@Param("receiverId") Long receiverId, @Param("senderId") Long senderId);
+
+// Get last message between two users
+Message findTopBySenderIdAndReceiverIdOrReceiverIdAndSenderIdOrderByTimestampDesc(
+    Long senderId1, Long receiverId1, Long senderId2, Long receiverId2);
+
+// Get chat partners (distinct users a user has chatted with)
+@Query("SELECT DISTINCT u FROM User u WHERE u.id IN " +
+       "(SELECT m.sender.id FROM Message m WHERE m.receiver.id = :userId) OR u.id IN " +
+       "(SELECT m.receiver.id FROM Message m WHERE m.sender.id = :userId)")
+List<User> findChatPartners(@Param("userId") Long userId);
+
+// Get recent messages for a user (last 50)
+@Query("SELECT m FROM Message m WHERE m.sender.id = :userId OR m.receiver.id = :userId ORDER BY m.timestamp DESC LIMIT 50")
+List<Message> findRecentMessagesForUser(@Param("userId") Long userId);
 }
