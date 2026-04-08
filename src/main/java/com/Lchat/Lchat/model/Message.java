@@ -14,6 +14,7 @@ public class Message {
     private String content;
     private LocalDateTime timestamp;
     private boolean isRead;
+    private String type;
     
 
     @ManyToOne
@@ -39,7 +40,15 @@ public class Message {
     public void setTimeStamp(LocalDateTime timestamp){ this.timestamp=timestamp;}
 
     public boolean getIsRead(){ return isRead;}
-    public void setIsRead(){ this.isRead=true;}
+    public void setIsRead(boolean isRead){ this.isRead=isRead;}
 
+    public User getSender(){ return sender;}
+    public void setSender(User sender){ this.sender=sender;}
+
+    public User getReceiver(){ return receiver;}
+    public void setReceiver(User receiver){ this.receiver=receiver;}
+
+    public String getType(){ return type;}
+    public void setType(String type){ this.type=type;}
     
 }
