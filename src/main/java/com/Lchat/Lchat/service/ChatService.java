@@ -97,6 +97,25 @@ public class ChatService {
             throw new RuntimeException("You are not authorized to delete this message");
         }
     }
-    
-}
+
+    // Get message by ID
+    public MessageResponseDTO findMessageById(Long messageId){
+        Message message=messageRepository.findById(messageId)
+        .orElseThrow(()->new RuntimeException("message not found with id: "+messageId));
+
+        return messageMapper.toResponseDTO(message);
+    }
+
+    public List<MessageResponseDTO>getRecentMessages(Long userId){
+        List<Message> message=messageRepository.findRecentMessagesForUser(userId);
+
+     return messageMapper.toResponseDTOList(message);
+    }
+    public boolean isUserOnline(Long userId){
+              return userRepository.findById(userId)
+                .map(user -> user.getChatStatus() == com.Lchat.Lchat.model.ChatStatus.ONLINE)
+                .orElse(false);
+    }
+    }
+
 
