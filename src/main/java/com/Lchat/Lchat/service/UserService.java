@@ -114,7 +114,44 @@ public List<UserDTO> getAllOnlineUsers(){
     .collect(Collectors.toList());
 }
 
+//search for users by name
+public List<UserDTO> searchUsers(String searchTerm,Long currentUserId){
+    List<User> users=userRepository.searchUsersExcludingCurrent(currentUserId, searchTerm);
+
+    return users.stream()
+        .map(userMapper::toDTO)
+        .collect(Collectors.toList());
+
+}
+//update user profile
+public UserResponseDTO updateUser(Long userId,UserUpdateDTO updateDTO){
+       User user = userRepository.findById(userId)
+       .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+
+       //updating fields using mapper
+       userMapper.updateEntity(updateDTO, user);
+
+       //save updated user
+       User updatedUser=userRepository.save(user);
+
+return userMapper.toResponseDTO(updatedUser);
+}
+//update user status 
+public void updateUserStatus(Long userId,ChatStatus status){
+    User user=userRepository.findById(userId)
+    .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
 
 
+     user.setChatStatus(status);
+     user.setLastActive(LocalDateTime.now());
+     userRepository.save(user);
+}
+ // Get all users (for admin)
+    public List<UserResponseDTO> getAllUsers() {
+        List<User> users = userRepository.findAll();
+        return users.stream()
+                .map(userMapper::toResponseDTO)
+                .collect(Collectors.toList());
+    }
 
 }
