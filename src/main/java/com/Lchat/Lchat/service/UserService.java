@@ -57,9 +57,9 @@ public UserResponseDTO registerUser(UserRegistrationDTO registrationDTO){
 //authentication for user login
 public UserResponseDTO login(UserLoginDTO loginDTO){
     //find user by email or username
-    Optional<User> userOptional=userRepository.findByEmailorUsername(
-        loginDTO.getUsernameOrEmail(),
+    Optional<User> userOptional=userRepository.findByEmailOrUsername(
         loginDTO.getUsernameOrEmail()
+   
     );
 
     if(userOptional.isEmpty()){ throw new RuntimeException("Invalid credentials");}
@@ -107,7 +107,7 @@ return userMapper.toResponseDTO(user);
 }
 //get all online users
 public List<UserDTO> getAllOnlineUsers(){
-    List<User>onlineUsers=userRepository.findByStatus(ChatStatus.ONLINE);
+List<User> onlineUsers = userRepository.findByChatStatus(ChatStatus.ONLINE);
 
     return onlineUsers.stream()
     .map(userMapper::toDTO)

@@ -14,24 +14,28 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User,Long> {
 Optional<User> findByEmail(String email);
  
-List<User> findeByNameIgnoreCase(String name);
+List<User> findByNameIgnoreCase(String name);
     
 
 //find by username for login or display
 Optional<User> findByUsername(String name);
 
 //find by email or password for flexible login
-Optional<User>findByEmailorUsername(String email,String username);
+// ✅ CORRECT - Using @Query annotation
+@Query("SELECT u FROM User u WHERE u.email = :emailOrUsername OR u.username = :emailOrUsername")
+Optional<User> findByEmailOrUsername(@Param("emailOrUsername") String emailOrUsername);
 
 //search by name
 List<User>findByNameContainingIgnoreCase(String name);
 
 //find users by status
-List<User>findByStatus(ChatStatus chatStatus);
-
+   List<User> findByChatStatus(ChatStatus chatStatus);
+// Search users excluding contacts
+@Query("SELECT u FROM User u WHERE u.id NOT IN :excludedIds AND (u.name LIKE %:searchTerm% OR u.username LIKE %:searchTerm% OR u.email LIKE %:searchTerm%)")
+List<User> searchUsersExcludingContacts(@Param("excludedIds") List<Long> excludedIds, @Param("searchTerm") String searchTerm);
 //find all online users
-@Query("SELECT u FROM User u WHERE u.status = 'ONLINE'")
-List<User>findAllOnlineUsers();
+@Query("SELECT u FROM User u WHERE u.chatStatus = 'ONLINE'")
+List<User> findAllOnlineUsers();
 
 
    // 7. Search users excluding current user (for new chat)

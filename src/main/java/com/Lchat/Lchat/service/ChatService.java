@@ -75,10 +75,11 @@ public class ChatService {
     }
 
     //getting message between two last users
-    public MessageResponseDTO getLastMessages(Long userId1,long userId2){
-        Message lastMessage=messageRepository.findTopBySenderIdAndReceiverIdOrReceiverIdAndSenderIdOrderByTimestampDesc(userId1, userId1, userId1, userId1);
-             return lastMessage != null ? messageMapper.toResponseDTO(lastMessage) : null;
-    }
+   public MessageResponseDTO getLastMessages(Long userId1, Long userId2){
+    Message lastMessage = messageRepository.findTopBySenderIdAndReceiverIdOrReceiverIdAndSenderIdOrderByTimestampDesc(
+        userId1, userId2, userId1, userId2);  // ✅ Correct parameters
+    return lastMessage != null ? messageMapper.toResponseDTO(lastMessage) : null;
+}
 
     //get all chat partners
     public List<User> getChatPartners(Long userId){
@@ -86,17 +87,16 @@ public class ChatService {
     }
 
     //delete message for a user
-    public void deleteMessage(Long messageId,Long userId){
-        Message message=messageRepository.findById(userId)
+   public void deleteMessage(Long messageId, Long userId){
+    Message message = messageRepository.findById(messageId)  // ✅ Use messageId, not userId
         .orElseThrow(()->new RuntimeException("message not found with id: "+messageId));
-
-        //check if the user is sender or receiver
-        if(message.getSender().getId().equals(userId)|| message.getReceiver().getId().equals(userId)){
-            messageRepository.delete(message);
-        }else{
-            throw new RuntimeException("You are not authorized to delete this message");
-        }
-    }
+    
+    // Check if the user is sender or receiver
+    if(message.getSender().getId().equals(userId) || message.getReceiver().getId().equals(userId)){
+        messageRepository.delete(message);
+    } else {
+        throw new RuntimeException("You are not authorized to delete this message");
+    }}
 
     // Get message by ID
     public MessageResponseDTO findMessageById(Long messageId){
